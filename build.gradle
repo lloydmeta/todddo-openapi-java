@@ -162,7 +162,7 @@ project(':infra') {
 task codeCoverageReport(type: JacocoReport) {
 	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
-	subprojects.each {
+	allprojects.each {
 		sourceSets it.sourceSets.main
 	}
 
@@ -175,5 +175,5 @@ task codeCoverageReport(type: JacocoReport) {
 }
 
 codeCoverageReport.dependsOn {
-	subprojects*.test
+	allprojects*.test
 }
