@@ -7,8 +7,8 @@ Explores:
 - [Micronaut](http://micronaut.io) web framework
 - [OpenApi](https://www.openapis.org)
 - [Gradle](https://gradle.org)
-- Subprojects
-- Configuring dependency constraints
+	- Subprojects
+	- Configuring dependency constraints
 - [Lombok](https://projectlombok.org) for immutable data structures
 - [Functional Java](https://www.functionaljava.org) for some FP data structures (`Either`)
 - [MapStruct](https://mapstruct.org) for compile-time-safe mapping between data types
@@ -18,19 +18,21 @@ Explores:
 
 ### Running
 
-![OpenApi](openapi.png)
+* OpenApi at [localhost:8080/swagger-ui](http://localhost:8080/swagger-ui)
+	![OpenApi](openapi.png)
+* RapiDoc at [localhost:8080/rapidoc](http://localhost:8080/rapidoc)
+	![rapidoc](rapidoc.png)
 
 The are various ways to run this (consult the Micronaut docs), but I've verified the following 2.
 
 #### On the JVM
 
-`./gradlew check run`, then open a browser to [localhost:8080/swagger-ui](http://localhost:8080/swagger-ui)
+`./gradlew check run`
 
 #### As a Graal Native docker image
 
 - `./gradlew build assemble && ./docker-build.sh`
 - `docker run -p 8080:8080 todddo-openapi-java` (marvel at the sub 100ms start time)
-- Go [localhost:8080/swagger-ui](http://localhost:8080/swagger-ui)
 
 
 ### Thoughts
