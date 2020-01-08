@@ -1,0 +1,179 @@
+plugins {
+	id "com.github.johnrengelman.shadow" version "5.0.0"
+	id "application"
+	id "net.ltgt.apt-eclipse" version "0.21"
+	id "com.diffplug.gradle.spotless" version "3.27.0"
+}
+
+version "0.1"
+group "todddo.java"
+mainClassName = "todddo.java.api.Application"
+
+allprojects {
+
+	apply plugin: "java"
+	apply plugin: 'jacoco'
+	apply plugin: 'com.diffplug.gradle.spotless'
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		jcenter()
+		maven { url "https://jcenter.bintray.com" }
+		maven { url "http://repo1.maven.org/maven2/" }
+
+	}
+
+	dependencies {
+		constraints {
+			testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
+			testImplementation("org.mockito:mockito-core:3.2.4")
+			compileOnly "org.projectlombok:lombok:${lombokVersion}"
+			annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+			compile "javax.annotation:javax.annotation-api:${javaxAnnotationApiVersion}"
+			compile "com.google.code.findbugs:jsr305:${jsr305Version}"
+			implementation "io.reactivex.rxjava2:rxjava:${rxJava2Version}"
+			implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+			annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+			annotationProcessor "io.micronaut:micronaut-inject-java:${micronautVersion}"
+			implementation "io.reactivex.rxjava2:rxjava:${rxJava2Version}"
+			compile "io.micronaut:micronaut-inject:${micronautVersion}"
+			compile 'org.functionaljava:functionaljava:4.8.1'
+		}
+	}
+
+	spotless {
+		format 'misc', {
+			target '**/*.gradle', '**/*.md', '**/.gitignore'
+
+			trimTrailingWhitespace()
+			indentWithTabs() // or spaces. Takes an integer argument if you don't like 4
+			endWithNewline()
+		}
+
+		java {
+			googleJavaFormat() // use a specific formatter for Java files
+		}
+	}
+
+
+	configurations {
+		// for dependencies that are needed for development only
+		developmentOnly
+	}
+
+
+	test.classpath += configurations.developmentOnly
+	// use JUnit 5 platform
+	test {
+		useJUnitPlatform()
+	}
+
+	shadowJar {
+		mergeServiceFiles()
+	}
+
+	run.classpath += configurations.developmentOnly
+	run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+	tasks.withType(JavaCompile) {
+		options.encoding = "UTF-8"
+		options.compilerArgs.add('-parameters')
+	}
+
+}
+
+tasks.withType(JavaCompile) {
+	options.fork = true
+	options.forkOptions.jvmArgs << '-Dmicronaut.openapi.views.spec=rapidoc.enabled=true,swagger-ui.enabled=true,swagger-ui.theme=material'
+}
+
+dependencies {
+	implementation project(':domain')
+	implementation project(':infra')
+	compileOnly "org.projectlombok:lombok"
+	implementation "org.mapstruct:mapstruct:"
+	testImplementation "org.testng:testng:6.10", "org.easytesting:fest-assert:1.4"
+	annotationProcessor "org.mapstruct:mapstruct-processor"
+	annotationProcessor "org.projectlombok:lombok"
+	annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+	annotationProcessor "io.micronaut:micronaut-graal"
+	annotationProcessor "io.micronaut:micronaut-inject-java"
+	annotationProcessor "io.micronaut:micronaut-validation"
+	annotationProcessor "io.micronaut.configuration:micronaut-openapi:${micronautOpenApiVersion}"
+	compileOnly "org.graalvm.nativeimage:svm"
+	implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+	implementation "io.micronaut:micronaut-http-client"
+	implementation "io.micronaut:micronaut-inject"
+	implementation "io.micronaut:micronaut-validation"
+	implementation "io.micronaut:micronaut-runtime"
+	implementation "io.micronaut:micronaut-http-server-netty"
+	runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+	compile "io.swagger.core.v3:swagger-annotations"
+	testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+	testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+	testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+	testImplementation "org.junit.jupiter:junit-jupiter-api"
+	testImplementation "io.micronaut.test:micronaut-test-junit5"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+	testImplementation "org.mockito:mockito-core"
+}
+
+project(':domain') {
+
+	dependencies {
+		compileOnly "org.projectlombok:lombok"
+		annotationProcessor "org.projectlombok:lombok"
+		annotationProcessor "io.micronaut:micronaut-inject-java"
+		compile "javax.annotation:javax.annotation-api"
+		compile "com.google.code.findbugs:jsr305"
+		implementation "io.reactivex.rxjava2:rxjava"
+		testImplementation "org.junit.jupiter:junit-jupiter"
+		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+		testImplementation "org.mockito:mockito-core"
+		compile 'org.functionaljava:functionaljava'
+		compile "javax.inject:javax.inject:1"
+		compile "io.micronaut:micronaut-inject" // This also fails at runtime if absent..
+	}
+}
+
+project(':infra') {
+
+	dependencies {
+		implementation project(':domain')
+		compileOnly "org.projectlombok:lombok:"
+		implementation "org.mapstruct:mapstruct:"
+		annotationProcessor "org.mapstruct:mapstruct-processor:"
+		annotationProcessor "org.projectlombok:lombok"
+		annotationProcessor "io.micronaut:micronaut-inject-java"
+		compile "javax.annotation:javax.annotation-api"
+		compile "com.google.code.findbugs:jsr305"
+		compile "javax.inject:javax.inject:1"
+		implementation "io.reactivex.rxjava2:rxjava"
+		compile "io.micronaut:micronaut-inject" // This also fails at runtime if absent..
+		testImplementation "org.junit.jupiter:junit-jupiter"
+		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+		testImplementation "org.mockito:mockito-core"
+	}
+}
+
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+	subprojects.each {
+		sourceSets it.sourceSets.main
+	}
+
+	reports {
+		xml.enabled true
+		xml.destination file("${buildDir}/reports/jacoco/report.xml")
+		html.enabled false
+		csv.enabled false
+	}
+}
+
+codeCoverageReport.dependsOn {
+	subprojects*.test
+}
