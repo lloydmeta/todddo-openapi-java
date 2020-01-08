@@ -1,4 +1,4 @@
-## todddo-openapi-java
+## todddo-openapi-java [![Build Status](https://travis-ci.org/lloydmeta/todddo-openapi-java.svg?branch=master)](https://travis-ci.org/lloydmeta/todddo-openapi-java) [![codecov](https://codecov.io/gh/lloydmeta/todddo-openapi-java/branch/master/graph/badge.svg)](https://codecov.io/gh/lloydmeta/todddo-openapi-java)
 
 An exploration of modern Java API dev by building a non-trivial app with DDD-esque structuring.
 
