@@ -1,6 +1,6 @@
 ## todddo-openapi-java [![Build Status](https://travis-ci.org/lloydmeta/todddo-openapi-java.svg?branch=master)](https://travis-ci.org/lloydmeta/todddo-openapi-java) [![codecov](https://codecov.io/gh/lloydmeta/todddo-openapi-java/branch/master/graph/badge.svg)](https://codecov.io/gh/lloydmeta/todddo-openapi-java)
 
-An exploration of modern Java API dev by building a non-trivial app with DDD-esque structuring.
+An exploration of modern Java API development by building a non-trivial app with DDD-esque structuring.
 
 Explores:
 
@@ -40,9 +40,9 @@ The are various ways to run this (consult the Micronaut docs), but I've verified
 #### Micronaut
 
 - Haven't benchmarked, but seems to be quite quick to boot and comes with support for a *lot* of things:
-- OpenAPI
-- DI
-- GraalVM
+	- OpenAPI
+	- DI
+	- GraalVM
 
 #### Lombok
 
